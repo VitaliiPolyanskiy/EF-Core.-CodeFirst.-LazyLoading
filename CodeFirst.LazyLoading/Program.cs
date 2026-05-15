@@ -1,33 +1,37 @@
 ﻿using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 namespace CodeFirst.LazyLoading
 {
     class MainClass
     {
-        // Для работы с БД MS SQL Server необходимо добавить пакет:
-        // Microsoft.EntityFrameworkCore.SqlServer(представляет функциональность Entity Framework для работы с MS SQL Server)
+        // Для роботи з БД MS SQL Server необхідно додати пакет:
+        // Microsoft.EntityFrameworkCore.SqlServer (представляє функціональність Entity Framework для роботи з MS SQL Server)
 
-        // Lazy loading или ленивая загрузка предполагает неявную автоматическую загрузку связанных данных при обращении к навигационному свойству.
+        // Lazy loading або ліниве завантаження передбачає неявне автоматичне завантаження пов'язаних даних при зверненні до навігаційної властивості.
         // Microsoft.EntityFrameworkCore.Proxies
 
 
         static void Main()
         {
-            try 
+            Console.OutputEncoding = Encoding.UTF8;
+            Console.InputEncoding = Encoding.UTF8;
+
+            try
             {
                 while (true)
                 {
                     Console.Clear();
-                    Console.WriteLine("1. Показать все группы");
-                    Console.WriteLine("2. Добавить группу");
-                    Console.WriteLine("3. Редактировать группу");
-                    Console.WriteLine("4. Удалить группу");
-                    Console.WriteLine("5. Показать всех студентов");
-                    Console.WriteLine("6. Показать студентов конкретной группы");
-                    Console.WriteLine("7. Добавить студента");
-                    Console.WriteLine("8. Редактировать студента");
-                    Console.WriteLine("9. Удалить студента");
-                    Console.WriteLine("0. Выход");
+                    Console.WriteLine("1. Показати всі групи");
+                    Console.WriteLine("2. Додати групу");
+                    Console.WriteLine("3. Редагувати групу");
+                    Console.WriteLine("4. Видалити групу");
+                    Console.WriteLine("5. Показати всіх студентів");
+                    Console.WriteLine("6. Показати студентів конкретної групи");
+                    Console.WriteLine("7. Додати студента");
+                    Console.WriteLine("8. Редагувати студента");
+                    Console.WriteLine("9. Видалити студента");
+                    Console.WriteLine("0. Вихід");
                     int result = int.Parse(Console.ReadLine()!);
                     switch (result)
                     {
@@ -60,16 +64,18 @@ namespace CodeFirst.LazyLoading
                             break;
                         case 0:
                             return;
-                    };                    
+                    }
+                    ;
                 }
-            } 
-            catch(Exception ex) 
+            }
+            catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
             }
         }
 
-        static void ShowAllGroups() {
+        static void ShowAllGroups()
+        {
             Console.Clear();
             using (var db = new AcademyGroupContext())
             {
@@ -77,7 +83,7 @@ namespace CodeFirst.LazyLoading
                             select gr;
                 int iter = 0;
                 foreach (var group in query)
-                    Console.WriteLine($"Группа #{++iter} {group.Name}");
+                    Console.WriteLine($"Група #{++iter} {group.Name}");
             }
             Console.ReadKey();
         }
@@ -88,7 +94,7 @@ namespace CodeFirst.LazyLoading
             string groupname;
             do
             {
-                Console.WriteLine("Введите название новой группы: ");
+                Console.WriteLine("Введіть назву нової групи: ");
                 groupname = Console.ReadLine()!;
             }
             while (groupname.Trim().IsNullOrEmpty());
@@ -97,7 +103,7 @@ namespace CodeFirst.LazyLoading
                 var academygroup = new AcademyGroup { Name = groupname };
                 db.AcademyGroups.Add(academygroup);
                 db.SaveChanges();
-                Console.WriteLine("Группа успешно добавлена!");
+                Console.WriteLine("Групу успішно додано!");
 
             }
             Console.ReadKey();
@@ -108,21 +114,21 @@ namespace CodeFirst.LazyLoading
             Console.Clear();
             using (var db = new AcademyGroupContext())
             {
-                Console.WriteLine("Введите порядковый номер группы: ");
-                int number = int.Parse(Console.ReadLine()!); 
+                Console.WriteLine("Введіть порядковий номер групи: ");
+                int number = int.Parse(Console.ReadLine()!);
                 var query = (from gr in db.AcademyGroups
-                            select gr).ToList()[number - 1];
+                             select gr).ToList()[number - 1];
                 string groupname;
                 do
                 {
-                    Console.WriteLine("Введите новое название группы: ");
+                    Console.WriteLine("Введіть нову назву групи: ");
                     groupname = Console.ReadLine()!;
                 }
                 while (groupname.Trim().IsNullOrEmpty());
                 query.Name = groupname;
                 db.SaveChanges();
-                Console.WriteLine("Группа успешно изменена!");
-            }            
+                Console.WriteLine("Групу успішно змінено!");
+            }
             Console.ReadKey();
         }
 
@@ -131,13 +137,13 @@ namespace CodeFirst.LazyLoading
             Console.Clear();
             using (var db = new AcademyGroupContext())
             {
-                Console.WriteLine("Введите порядковый номер группы: ");
+                Console.WriteLine("Введіть порядковий номер групи: ");
                 int number = int.Parse(Console.ReadLine()!);
                 var query = (from gr in db.AcademyGroups
                              select gr).ToList()[number - 1];
                 db.AcademyGroups.RemoveRange(query);
                 db.SaveChanges();
-                Console.WriteLine("Группа успешно удалена!");
+                Console.WriteLine("Групу успішно видалено!");
             }
             Console.ReadKey();
         }
@@ -157,7 +163,7 @@ namespace CodeFirst.LazyLoading
                     Console.Write($"{st.Age,10}");
                     Console.Write($"{st.GPA,10}");
                     Console.WriteLine($"{st.AcademyGroup?.Name,10}");
-                }                   
+                }
             }
             Console.ReadKey();
         }
@@ -167,7 +173,7 @@ namespace CodeFirst.LazyLoading
             Console.Clear();
             using (var db = new AcademyGroupContext())
             {
-                Console.WriteLine("Введите порядковый номер группы: ");
+                Console.WriteLine("Введіть порядковий номер групи: ");
                 int number = int.Parse(Console.ReadLine()!);
                 var query = (from gr in db.AcademyGroups
                              select gr).ToList()[number - 1];
@@ -188,33 +194,33 @@ namespace CodeFirst.LazyLoading
         {
             Console.Clear();
             string firstname, lastname;
-            
+
             using (var db = new AcademyGroupContext())
             {
                 do
                 {
-                    Console.WriteLine("Введите имя студента: ");
+                    Console.WriteLine("Введіть ім'я студента: ");
                     firstname = Console.ReadLine()!;
                 }
                 while (firstname.Trim().IsNullOrEmpty());
                 do
                 {
-                    Console.WriteLine("Введите фамилию студента: ");
+                    Console.WriteLine("Введіть прізвище студента: ");
                     lastname = Console.ReadLine()!;
                 }
                 while (lastname.Trim().IsNullOrEmpty());
-                Console.WriteLine("Введите возраст студента: ");
+                Console.WriteLine("Введіть вік студента: ");
                 int age = int.Parse(Console.ReadLine()!);
-                Console.WriteLine("Введите средний балл студента: ");
-                double gpa = int.Parse(Console.ReadLine()!);
-                Console.WriteLine("Введите порядковый номер группы: ");
+                Console.WriteLine("Введіть середній бал студента: ");
+                double gpa = double.Parse(Console.ReadLine()!);
+                Console.WriteLine("Введіть порядковий номер групи: ");
                 int number = int.Parse(Console.ReadLine()!);
                 var query = (from gr in db.AcademyGroups
                              select gr).ToList()[number - 1];
                 var st = new Student { FirstName = firstname, LastName = lastname, Age = age, GPA = gpa, AcademyGroup = query };
                 db.Students?.Add(st);
                 db.SaveChanges();
-                Console.WriteLine("Студент успешно добавлен!");
+                Console.WriteLine("Студента успішно додано!");
 
             }
             Console.ReadKey();
@@ -227,27 +233,27 @@ namespace CodeFirst.LazyLoading
 
             using (var db = new AcademyGroupContext())
             {
-                Console.WriteLine("Введите порядковый номер студента: ");
+                Console.WriteLine("Введіть порядковий номер студента: ");
                 int number = int.Parse(Console.ReadLine()!);
                 var student = (from st in db.Students
-                             select st).ToList()[number - 1];
+                               select st).ToList()[number - 1];
                 do
                 {
-                    Console.WriteLine("Введите имя студента: ");
+                    Console.WriteLine("Введіть ім'я студента: ");
                     firstname = Console.ReadLine()!;
                 }
                 while (firstname.Trim().IsNullOrEmpty());
                 do
                 {
-                    Console.WriteLine("Введите фамилию студента: ");
+                    Console.WriteLine("Введіть прізвище студента: ");
                     lastname = Console.ReadLine()!;
                 }
                 while (lastname.Trim().IsNullOrEmpty());
-                Console.WriteLine("Введите возраст студента: ");
+                Console.WriteLine("Введіть вік студента: ");
                 int age = int.Parse(Console.ReadLine()!);
-                Console.WriteLine("Введите средний балл студента: ");
-                double gpa = int.Parse(Console.ReadLine()!);
-                Console.WriteLine("Введите порядковый номер группы: ");
+                Console.WriteLine("Введіть середній бал студента: ");
+                double gpa = double.Parse(Console.ReadLine()!);
+                Console.WriteLine("Введіть порядковий номер групи: ");
                 number = int.Parse(Console.ReadLine()!);
                 var group = (from gr in db.AcademyGroups
                              select gr).ToList()[number - 1];
@@ -257,7 +263,7 @@ namespace CodeFirst.LazyLoading
                 student.GPA = gpa;
                 student.AcademyGroup = group;
                 db.SaveChanges();
-                Console.WriteLine("Студент успешно изменен!");
+                Console.WriteLine("Дані студента успішно змінено!");
 
             }
             Console.ReadKey();
@@ -268,13 +274,13 @@ namespace CodeFirst.LazyLoading
             Console.Clear();
             using (var db = new AcademyGroupContext())
             {
-                Console.WriteLine("Введите порядковый номер студента: ");
+                Console.WriteLine("Введіть порядковий номер студента: ");
                 int number = int.Parse(Console.ReadLine()!);
                 var student = (from st in db.Students
                                select st).ToList()[number - 1];
                 db.Students.RemoveRange(student);
                 db.SaveChanges();
-                Console.WriteLine("Студент успешно удален!");
+                Console.WriteLine("Студента успішно видалено!");
 
             }
             Console.ReadKey();
